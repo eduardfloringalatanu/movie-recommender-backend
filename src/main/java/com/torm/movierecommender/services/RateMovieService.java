@@ -5,6 +5,7 @@ import com.torm.movierecommender.entities.MovieEntity;
 import com.torm.movierecommender.entities.UserEntity;
 import com.torm.movierecommender.repositories.MovieRepository;
 import com.torm.movierecommender.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -17,15 +18,18 @@ public class RateMovieService {
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
 
+    @Transactional
     public void rateMovie(RateMovieRequestBody rateMovieRequestBody, Jwt jwt) {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found."));
 
-        MovieEntity movie = movieRepository.findByMovieIdAndUser(rateMovieRequestBody.movie_id(), user)
+        MovieEntity movie = movieRepository.findByMovieIdAndUser(rateMovieRequestBody.movieId(), user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found."));
 
-        //
+        movie.setScore(rateMovieRequestBody.score());
+
+        movieRepository.save(movie);
     }
 }

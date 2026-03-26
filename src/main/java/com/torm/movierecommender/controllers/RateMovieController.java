@@ -23,7 +23,7 @@ public class RateMovieController {
 
     public record RateMovieRequestBody(
             @Positive(message = "Movie ID cannot be negative.", groups = First.class)
-            Long movie_id,
+            Long movieId,
 
             @Range(min = 1, max = 10, message = "Score must be between 1 and 10.", groups = Second.class)
             Integer score) {}
