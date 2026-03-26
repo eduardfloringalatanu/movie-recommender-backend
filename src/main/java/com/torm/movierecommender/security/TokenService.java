@@ -4,25 +4,28 @@ import com.torm.movierecommender.entities.RefreshTokenEntity;
 import com.torm.movierecommender.entities.UserEntity;
 import com.torm.movierecommender.repositories.RefreshTokenRepository;
 import com.torm.movierecommender.repositories.UserRepository;
-import io.jsonwebtoken.Jwts;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Date;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class TokenService {
-    private final SecretKey secretKey;
+    private final JwtEncoder jwtEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
@@ -35,12 +38,15 @@ public class TokenService {
     public String generateAccessToken(String identifier) {
         Instant now = Instant.now();
 
-        return Jwts.builder()
-                .setSubject(identifier)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusMillis(accessTokenExpiration)))
-                .signWith(secretKey)
-                .compact();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .subject(identifier)
+                .issuedAt(now)
+                .expiresAt(now.plusMillis(accessTokenExpiration))
+                .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
     public String hashRefreshToken(String refreshToken) {
@@ -59,8 +65,7 @@ public class TokenService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
-        RefreshTokenEntity refreshToken = refreshTokenRepository.findByUser(user)
-                .orElse(new RefreshTokenEntity());
+        RefreshTokenEntity refreshToken = new RefreshTokenEntity();
 
         String token = UUID.randomUUID().toString();
         String hashedToken = hashRefreshToken(token);
@@ -83,5 +88,11 @@ public class TokenService {
         }
 
         return refreshToken;
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void deleteAllExpiredRefreshTokens() {
+        refreshTokenRepository.deleteAllExpiredSince(Instant.now());
     }
 }

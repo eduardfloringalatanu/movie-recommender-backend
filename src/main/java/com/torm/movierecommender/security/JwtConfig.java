@@ -1,18 +1,24 @@
 package com.torm.movierecommender.security;
 
-import io.jsonwebtoken.security.Keys;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.*;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class JwtConfig {
     @Bean
     public SecretKey secretKey(@Value("${jwt.secret-key}") String jwtSecretKey) {
-        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
+        return new SecretKeySpec(jwtSecretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder(SecretKey secretKey) {
+        return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey));
     }
 
     @Bean

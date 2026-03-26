@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
 
 @Entity
 @Table(name = "movies")
@@ -32,12 +31,11 @@ public class MovieEntity {
     @Getter @Setter
     private String embeddings;
 
+    @Getter @Setter
+    private Integer score;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @Getter @Setter
     private UserEntity user;
-
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<RatingEntity> ratings;
 }

@@ -5,7 +5,6 @@ import com.torm.movierecommender.repositories.RefreshTokenRepository;
 import com.torm.movierecommender.security.TokenService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.First;
 import com.torm.movierecommender.validation.ValidationGroupSequences.ValidationGroupSequence1;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ public class RefreshAccessTokenController {
     public record RefreshTokenResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/refresh_access_token")
-    @Transactional
     public RefreshTokenResponseBody refreshAccessToken(@RequestBody @Validated(ValidationGroupSequence1.class) RefreshTokenRequestBody refreshTokenRequestBody) {
         String hashedRefreshToken = tokenService.hashRefreshToken(refreshTokenRequestBody.refreshToken());
 

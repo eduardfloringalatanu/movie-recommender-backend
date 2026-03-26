@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     Optional<MovieEntity> findByMovieIdAndUser(Long movieId, UserEntity user);
-    List<MovieEntity> findByRatingsScoreGreaterThanEqualAndUser(Integer score, UserEntity user);
+    List<MovieEntity> findByScoreGreaterThanEqualAndUser(Integer score, UserEntity user);
 }

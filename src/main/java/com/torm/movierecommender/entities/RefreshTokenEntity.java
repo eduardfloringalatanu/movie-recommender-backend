@@ -23,7 +23,7 @@ public class RefreshTokenEntity {
     @Getter @Setter
     private Instant expiryDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @Getter @Setter
     private UserEntity user;

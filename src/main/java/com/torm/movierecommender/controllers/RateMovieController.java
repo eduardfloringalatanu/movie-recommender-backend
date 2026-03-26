@@ -3,7 +3,6 @@ package com.torm.movierecommender.controllers;
 import com.torm.movierecommender.entities.MovieEntity;
 import com.torm.movierecommender.entities.UserEntity;
 import com.torm.movierecommender.repositories.MovieRepository;
-import com.torm.movierecommender.repositories.RatingRepository;
 import com.torm.movierecommender.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Max;
@@ -26,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class RateMovieController {
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
-    private final RatingRepository ratingRepository;
 
     public record RateMovieRequestBody(@Positive Long movie_id, @Min(1) @Max(10) Integer score) {}
 

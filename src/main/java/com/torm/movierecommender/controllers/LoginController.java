@@ -6,7 +6,6 @@ import com.torm.movierecommender.security.TokenService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.First;
 import com.torm.movierecommender.validation.ValidationGroupSequences.Second;
 import com.torm.movierecommender.validation.ValidationGroupSequences.ValidationGroupSequence1;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class LoginController {
     public record LoginResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/login")
-    @Transactional
     public LoginResponseBody login(@RequestBody @Validated(ValidationGroupSequence1.class) LoginRequestBody loginRequestBody) {
         UserEntity user = userRepository.findByUsername(loginRequestBody.usernameOrEmail())
                 .or(() -> userRepository.findByEmail(loginRequestBody.usernameOrEmail()))
