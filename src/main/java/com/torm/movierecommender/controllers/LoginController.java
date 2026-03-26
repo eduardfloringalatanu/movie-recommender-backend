@@ -2,8 +2,11 @@ package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.entities.UserEntity;
 import com.torm.movierecommender.repositories.UserRepository;
-import com.torm.movierecommender.security.JwtUtil;
-import com.torm.movierecommender.validation.ValidationGroupSequences.*;
+import com.torm.movierecommender.security.TokenService;
+import com.torm.movierecommender.validation.ValidationGroupSequences.First;
+import com.torm.movierecommender.validation.ValidationGroupSequences.Second;
+import com.torm.movierecommender.validation.ValidationGroupSequences.ValidationGroupSequence1;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class LoginController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
 
     public record LoginRequestBody(
             @NotBlank(message = "Username/Email cannot be blank.", groups = First.class)
@@ -32,9 +35,10 @@ public class LoginController {
             @NotBlank(message = "Password cannot be blank.", groups = First.class)
             @Size(max = 64, message = "Password must be at most 64 characters long.", groups = Second.class)
             String password) {}
-    public record LoginResponseBody(String token) {}
+    public record LoginResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/login")
+    @Transactional
     public LoginResponseBody login(@RequestBody @Validated(ValidationGroupSequence1.class) LoginRequestBody loginRequestBody) {
         UserEntity user = userRepository.findByUsername(loginRequestBody.usernameOrEmail())
                 .or(() -> userRepository.findByEmail(loginRequestBody.usernameOrEmail()))
@@ -44,8 +48,10 @@ public class LoginController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/email or password.");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String accessToken = tokenService.generateAccessToken(user.getUsername());
 
-        return new LoginResponseBody(token);
+        String refreshToken = tokenService.generateRefreshToken(user.getUserId());
+
+        return new LoginResponseBody(accessToken, refreshToken);
     }
 }

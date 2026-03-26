@@ -2,8 +2,9 @@ package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.entities.UserEntity;
 import com.torm.movierecommender.repositories.UserRepository;
-import com.torm.movierecommender.security.JwtUtil;
+import com.torm.movierecommender.security.TokenService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -27,7 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class RegisterController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
 
     @NoArgsConstructor
     public static class RegisterRequestBody {
@@ -69,9 +70,10 @@ public class RegisterController {
         }
     }
 
-    public record RegisterResponseBody(String token) {}
+    public record RegisterResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/register")
+    @Transactional
     public RegisterResponseBody register(@RequestBody @Validated(ValidationGroupSequence1.class) RegisterRequestBody registerRequestBody) {
         if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
@@ -88,8 +90,10 @@ public class RegisterController {
 
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String accessToken = tokenService.generateAccessToken(user.getUsername());
 
-        return new RegisterResponseBody(token);
+        String refreshToken = tokenService.generateRefreshToken(user.getUserId());
+
+        return new RegisterResponseBody(accessToken, refreshToken);
     }
 }

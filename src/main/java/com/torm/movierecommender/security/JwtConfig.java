@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.*;
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class JwtConfig {
     @Bean
     public SecretKey secretKey(@Value("${jwt.secret-key}") String jwtSecretKey) {
-        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
+        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     @Bean
