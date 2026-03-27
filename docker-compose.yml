@@ -16,6 +16,14 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
 
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "${OLLAMA_PORT}:11434"
+    restart: always
+    volumes:
+      - ollama_data:/root/.ollama
+
   app:
     build: ./
     ports:
@@ -23,6 +31,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      ollama:
+        condition: service_started
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${DATABASE_NAME}
       - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
@@ -30,6 +40,10 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=false
+      - SPRING_AI_OLLAMA_BASE_URL=http://ollama:11434
+      - SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL=${OLLAMA_CHAT_MODEL}
+      - SPRING_AI_OLLAMA_CHAT_OPTIONS_TEMPERATURE=${OLLAMA_CHAT_TEMPERATURE}
+      - SPRING_AI_OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL}
       - SERVER_ERROR_INCLUDE_MESSAGE=always
       - SERVER_ERROR_INCLUDE_BINDING_ERRORS=always
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
@@ -38,3 +52,4 @@ services:
 
 volumes:
   postgres_data:
+  ollama_data:

@@ -26,7 +26,7 @@ public class RateMovieController {
             Long movieId,
 
             @Range(min = 1, max = 10, message = "Score must be between 1 and 10.", groups = Second.class)
-            Integer score) {}
+            Short score) {}
 
     @PostMapping("/rate_movie")
     public void rateMovie(@RequestBody @Validated(ValidationGroupSequence1.class) RateMovieRequestBody rateMovieRequestBody, @AuthenticationPrincipal Jwt jwt) {

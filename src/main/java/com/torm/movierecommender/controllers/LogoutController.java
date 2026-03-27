@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class LogoutController {
-    private final TokenService tokenService;
-    private final RefreshTokenRepository refreshTokenRepository;
-
     private final LogoutService logoutService;
 
     public record LogoutRequestBody(
