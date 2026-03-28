@@ -1,6 +1,7 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.RegisterService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,7 +63,7 @@ public class RegisterController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterResponseBody register(@RequestBody @Validated RegisterRequestBody registerRequestBody) {
+    public RegisterResponseBody register(@RequestBody @Valid RegisterRequestBody registerRequestBody) {
         return registerService.register(registerRequestBody);
     }
 }

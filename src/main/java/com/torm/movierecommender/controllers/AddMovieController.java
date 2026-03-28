@@ -2,6 +2,7 @@ package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.AddMovieService;
 import com.torm.movierecommender.validation.MaxYear;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class AddMovieController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addMovie(@RequestBody @Validated AddMovieRequestBody addMovieRequestBody, @AuthenticationPrincipal Jwt jwt) {
+    public void addMovie(@RequestBody @Valid AddMovieRequestBody addMovieRequestBody, @AuthenticationPrincipal Jwt jwt) {
         addMovieService.addMovie(addMovieRequestBody, jwt);
     }
 }

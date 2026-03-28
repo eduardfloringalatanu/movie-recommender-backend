@@ -1,6 +1,7 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.RateMovieService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
@@ -23,7 +24,7 @@ public class RateMovieController {
 
     @PutMapping("/{movieId}/rating")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void rateMovie(@PathVariable @Positive(message = "MOVIE_ID_POSITIVE_ERROR") Long movieId, @RequestBody @Validated RateMovieRequestBody rateMovieRequestBody, @AuthenticationPrincipal Jwt jwt) {
+    public void rateMovie(@PathVariable @Positive(message = "MOVIE_ID_POSITIVE_ERROR") Long movieId, @RequestBody @Valid RateMovieRequestBody rateMovieRequestBody, @AuthenticationPrincipal Jwt jwt) {
         rateMovieService.rateMovie(movieId, rateMovieRequestBody, jwt);
     }
 }

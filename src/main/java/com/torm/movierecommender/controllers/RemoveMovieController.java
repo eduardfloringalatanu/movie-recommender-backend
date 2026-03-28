@@ -1,6 +1,7 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.RemoveMovieService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

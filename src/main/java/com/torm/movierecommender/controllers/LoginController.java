@@ -1,10 +1,10 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.LoginService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +27,7 @@ public class LoginController {
     public record LoginResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/login")
-    public LoginResponseBody login(@RequestBody @Validated LoginRequestBody loginRequestBody) {
+    public LoginResponseBody login(@RequestBody @Valid LoginRequestBody loginRequestBody) {
         return loginService.login(loginRequestBody);
     }
 }
