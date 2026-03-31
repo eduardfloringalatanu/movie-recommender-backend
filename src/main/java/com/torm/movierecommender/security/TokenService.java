@@ -1,9 +1,9 @@
 package com.torm.movierecommender.security;
 
-import com.torm.movierecommender.entities.RefreshTokenEntity;
-import com.torm.movierecommender.entities.UserEntity;
-import com.torm.movierecommender.repositories.RefreshTokenRepository;
-import com.torm.movierecommender.repositories.UserRepository;
+import com.torm.movierecommender.entity.RefreshTokenEntity;
+import com.torm.movierecommender.entity.UserEntity;
+import com.torm.movierecommender.repository.RefreshTokenRepository;
+import com.torm.movierecommender.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
