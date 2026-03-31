@@ -8,7 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "username", "email" })
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
 })
 @NoArgsConstructor
 public class UserEntity {
@@ -17,15 +18,15 @@ public class UserEntity {
     @Getter
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     @Getter @Setter
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 320)
     @Getter @Setter
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 60)
     @Getter @Setter
     private String password;
 

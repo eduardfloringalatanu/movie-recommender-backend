@@ -22,13 +22,15 @@ public class MovieEntity {
     @Getter @Setter
     private Short releaseYear;
 
+    @Column(columnDefinition = "TEXT")
     @Getter @Setter
     private String directors;
 
+    @Column(columnDefinition = "TEXT")
     @Getter @Setter
     private String genres;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     @Getter @Setter
     private String plot;
 
