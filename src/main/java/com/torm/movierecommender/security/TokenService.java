@@ -2,6 +2,8 @@ package com.torm.movierecommender.security;
 
 import com.torm.movierecommender.entity.RefreshTokenEntity;
 import com.torm.movierecommender.entity.UserEntity;
+import com.torm.movierecommender.exception.ErrorCode;
+import com.torm.movierecommender.exception.ResponseStatusException2;
 import com.torm.movierecommender.repository.RefreshTokenRepository;
 import com.torm.movierecommender.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -15,7 +17,6 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
@@ -66,7 +67,7 @@ public class TokenService {
     public String generateRefreshToken(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                        new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.USER_UNAUTHORIZED_ERROR));
 
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
 

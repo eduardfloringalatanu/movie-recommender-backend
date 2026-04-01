@@ -2,8 +2,8 @@ package com.torm.movierecommender.controller;
 
 import com.torm.movierecommender.dto.RateMovieRequestDto;
 import com.torm.movierecommender.service.RateMovieService;
+import com.torm.movierecommender.validation.MovieId;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +20,7 @@ public class RateMovieController {
 
     @PutMapping("/{movieId}/rating")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void rateMovie(@Positive(message = "MOVIE_ID_POSITIVE_ERROR") @PathVariable Long movieId, @Valid @RequestBody RateMovieRequestDto rateMovieRequestDto, @AuthenticationPrincipal Jwt jwt) {
+    public void rateMovie(@MovieId @PathVariable Long movieId, @Valid @RequestBody RateMovieRequestDto rateMovieRequestDto, @AuthenticationPrincipal Jwt jwt) {
         rateMovieService.rateMovie(movieId, rateMovieRequestDto, jwt);
     }
 }

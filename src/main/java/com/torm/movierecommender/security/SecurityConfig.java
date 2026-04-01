@@ -25,6 +25,7 @@ public class SecurityConfig {
             "/auth/register",
             "/auth/login",
             "/auth/refresh",
+            "/api-docs/**",
             "/error"
     };
 

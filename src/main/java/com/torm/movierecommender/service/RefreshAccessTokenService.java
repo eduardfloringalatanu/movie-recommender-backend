@@ -4,13 +4,14 @@ import com.torm.movierecommender.dto.RefreshTokenRequestDto;
 import com.torm.movierecommender.dto.RefreshTokenResponseDto;
 import com.torm.movierecommender.entity.RefreshTokenEntity;
 import com.torm.movierecommender.entity.UserEntity;
+import com.torm.movierecommender.exception.ErrorCode;
+import com.torm.movierecommender.exception.ResponseStatusException2;
 import com.torm.movierecommender.repository.RefreshTokenRepository;
 import com.torm.movierecommender.security.TokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 
 @Service
@@ -25,10 +26,10 @@ public class RefreshAccessTokenService {
 
         RefreshTokenEntity refreshToken = refreshTokenRepository.findByToken(hashedRefreshToken)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR"));
+                        new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.REFRESH_TOKEN_INVALID_ERROR));
 
         if (refreshToken.getExpiryDate().isBefore(Instant.now()))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR");
+            throw new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.REFRESH_TOKEN_INVALID_ERROR);
 
         UserEntity user = refreshToken.getUser();
 
@@ -36,7 +37,7 @@ public class RefreshAccessTokenService {
             if (Instant.now().isAfter(refreshToken.getRevokedAt().plusSeconds(30))) {
                 refreshTokenRepository.deleteByUser(user);
 
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR");
+                throw new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.REFRESH_TOKEN_INVALID_ERROR);
             }
         } else {
             refreshToken.setRevokedAt(Instant.now());

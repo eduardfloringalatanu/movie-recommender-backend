@@ -6,11 +6,12 @@ import java.util.List;
 public record ExceptionResponseDto(
         Instant timestamp,
         int status,
-        String errorType,
+        ErrorCode errorCode,
         List<ArgumentError> argumentErrors
 ) {
     public record ArgumentError(
             String argument,
-            String errorCode
+            ErrorCode errorCode2,
+            Object constraints
     ) {}
 }

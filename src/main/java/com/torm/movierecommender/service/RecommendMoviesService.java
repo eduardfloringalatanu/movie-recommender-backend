@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.torm.movierecommender.dto.RecommendMoviesRequestDto;
 import com.torm.movierecommender.entity.MovieEntity;
 import com.torm.movierecommender.entity.UserEntity;
+import com.torm.movierecommender.exception.ErrorCode;
+import com.torm.movierecommender.exception.ResponseStatusException2;
 import com.torm.movierecommender.repository.MovieRepository;
 import com.torm.movierecommender.repository.UserRepository;
 import com.torm.movierecommender.util.GenreUtils;
@@ -17,7 +19,6 @@ import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import java.time.LocalDate;
 import java.util.*;
@@ -82,7 +83,7 @@ public class RecommendMoviesService {
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                        new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.USER_UNAUTHORIZED_ERROR));
 
         String systemMessage = """
                 You are a movie recommendation assistant.

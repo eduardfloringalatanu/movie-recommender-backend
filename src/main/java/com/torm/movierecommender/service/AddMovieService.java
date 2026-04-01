@@ -3,6 +3,8 @@ package com.torm.movierecommender.service;
 import com.torm.movierecommender.dto.AddMovieRequestDto;
 import com.torm.movierecommender.entity.MovieEntity;
 import com.torm.movierecommender.entity.UserEntity;
+import com.torm.movierecommender.exception.ErrorCode;
+import com.torm.movierecommender.exception.ResponseStatusException2;
 import com.torm.movierecommender.repository.MovieRepository;
 import com.torm.movierecommender.repository.UserRepository;
 import com.torm.movierecommender.util.GenreUtils;
@@ -13,7 +15,6 @@ import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class AddMovieService {
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                        new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.USER_UNAUTHORIZED_ERROR));
 
         String title = addMovieRequestDto.title()
                 .strip()
@@ -45,7 +46,7 @@ public class AddMovieService {
                 .collect(Collectors.joining(","));
 
         if (movieRepository.existsByTitleAndReleaseYearAndDirectorsAndUser(title, releaseYear, directors, user))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "MOVIE_CONFLICT_ERROR");
+            throw new ResponseStatusException2(HttpStatus.CONFLICT, ErrorCode.MOVIE_CONFLICT_ERROR);
 
         String genres = addMovieRequestDto.genres()
                 .stream()

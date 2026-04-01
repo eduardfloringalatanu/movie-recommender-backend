@@ -1,7 +1,7 @@
 package com.torm.movierecommender.controller;
 
 import com.torm.movierecommender.service.RemoveMovieService;
-import jakarta.validation.constraints.Positive;
+import com.torm.movierecommender.validation.MovieId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +18,7 @@ public class RemoveMovieController {
 
     @DeleteMapping("/{movieId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeMovie(@Positive(message = "MOVIE_ID_POSITIVE_ERROR") @PathVariable Long movieId, @AuthenticationPrincipal Jwt jwt) {
+    public void removeMovie(@MovieId @PathVariable Long movieId, @AuthenticationPrincipal Jwt jwt) {
         removeMovieService.removeMovie(movieId, jwt);
     }
 }
