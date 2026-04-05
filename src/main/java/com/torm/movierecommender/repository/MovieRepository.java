@@ -2,6 +2,8 @@ package com.torm.movierecommender.repository;
 
 import com.torm.movierecommender.entity.MovieEntity;
 import com.torm.movierecommender.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -15,5 +17,5 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     List<MovieEntity> findByRatingIsNullAndUser(UserEntity user);
     List<MovieEntity> findByRatingIsNullAndReleaseYearGreaterThanEqualAndUser(Short releaseYear, UserEntity user);
     boolean existsByTitleAndReleaseYearAndDirectorsAndUser(String title, Short releaseYear, String directors, UserEntity user);
-    List<MovieEntity> findByUser(UserEntity user);
+    Page<MovieEntity> findByUser(UserEntity user, Pageable pageable);
 }

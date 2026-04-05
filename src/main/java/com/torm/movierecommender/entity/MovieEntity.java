@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
 @Table(name = "movies", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "title", "release_year", "directors", "user_id" })
 })
 @NoArgsConstructor
+@FieldNameConstants
 public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
